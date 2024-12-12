@@ -1,0 +1,4 @@
+#!/bin/bash 
+
+flutter build web --profile --dart-define=Dart2jsOptimization=O0 --web-renderer canvaskit --target=lib/main_dev.dart --output=/var/www/water.biissa.com
+# flutter build web --target=lib/main_dev.dart --output=../biissa-water-web --base-href=/app/ --profile --dart-define=Dart2jsOptimization=O0 #for debug mode

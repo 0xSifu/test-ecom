@@ -1,0 +1,330 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+before_all do |lane, options|
+
+  ENV['ITMSTRANSPORTER_FORCE_ITMS_PACKAGE_UPLOAD'] = "true"
+  ENV["FASTLANE_ITUNES_TRANSPORTER_USE_SHELL_SCRIPT"]="1"
+  ENV["FASTLANE_ITUNES_TRANSPORTER_PATH"]="/Applications/Transporter.app/Contents/itms"
+  ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
+  
+  app_store_connect_api_key(
+    key_id: "7LZDFGWC7H",
+    issuer_id: "9f807cbf-f17f-4134-a7ad-76a783fc135f",
+    key_filepath: "../never-commit/AuthKey_7LZDFGWC7H.p8",
+    duration: 500, # optional (maximum 1200)
+    in_house: false # optional but may be required if using match/sigh
+  )
+end
+
+platform :ios do
+
+  lane :upload_firebase_distribution do |options|
+
+    changelog = changelog_from_git_commits(
+        commits_count: 1
+    )
+    if options[:is_prod]
+      firebase_app_distribution(
+        service_credentials_file: "../never-commit/ufoe-85428-8afbfef40f92.json",
+        app: "1:991573388326:ios:f109397e53f9eac457cae7",
+        groups: "Testers",
+        release_notes: "(PRODUCTION) " + changelog,
+        debug: true
+      )
+    else
+      firebase_app_distribution(
+        service_credentials_file: "../never-commit/ufoe-85428-8afbfef40f92.json",
+        app: "1:991573388326:ios:7cd5bb3b89d1ff1157cae7",
+        groups: "Testers",
+        release_notes: "(STAGING) " + changelog,
+        debug: true
+      )
+    end
+  end
+
+  lane :adjust_code_signing do |options|
+    # more advanced manual code signing
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Runner.xcodeproj",
+      team_id: "TSU9353QRJ",
+      profile_name: "match AppStore com.ufoelektronika.consumer",
+      code_sign_identity: 'Apple Distribution',
+      build_configurations: ['Profile-prod', 'Release-prod']
+    )
+    # more advanced manual code signing
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Runner.xcodeproj",
+      team_id: "TSU9353QRJ",
+      profile_name: "match AppStore com.ufoelektronika.consumer.dev",
+      code_sign_identity: 'Apple Distribution',
+      build_configurations: ['Profile-dev', 'Release-dev']
+    )
+    # more advanced manual code signing
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Runner.xcodeproj",
+      team_id: "TSU9353QRJ",
+      profile_name: "match Development com.ufoelektronika.consumer",
+      code_sign_identity: 'Apple Development',
+      build_configurations: ['Debug-prod']
+    )
+    # more advanced manual code signing
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Runner.xcodeproj",
+      team_id: "TSU9353QRJ",
+      profile_name: "match Development com.ufoelektronika.consumer.dev",
+      code_sign_identity: 'Apple Development',
+      build_configurations: ['Debug-dev']
+    )
+  end
+
+  lane :run_match do |options|
+    if options[:is_ci]
+      match(
+        app_identifier: ["com.ufoelektronika.consumer.dev", "com.ufoelektronika.consumer"],
+        type: options[:type],
+        git_basic_authorization: ENV["MATCH_AUTHORIZATION"],
+        keychain_name: 'match_keychain',
+        keychain_password: 'keychain'
+      )
+    else
+      match(
+        app_identifier: ["com.ufoelektronika.consumer.dev", "com.ufoelektronika.consumer"],
+        type: options[:type]
+      )
+    end
+  end
+
+  lane :build_development_dev do |options|
+    run_match(is_ci: options[:is_ci] || false, type: 'appstore')
+    run_match(is_ci: options[:is_ci] || false, type: 'development')
+    adjust_code_signing
+    build_app(
+      scheme: "dev",
+      configuration: "Debug",
+      export_method: "development",
+      xcargs: "IS_FROM_APPSTORE='false'"
+    )
+  end
+
+  lane :build_development_prod do |options|
+    run_match(is_ci: options[:is_ci] || false, type: 'appstore')
+    run_match(is_ci: options[:is_ci] || false, type: 'development')
+    adjust_code_signing
+    build_app(
+      scheme: "prod",
+      export_method: "development",
+      xcargs: "IS_FROM_APPSTORE='false'"
+    )
+  end
+
+  lane :build_appstore_dev do |options|
+    run_match(is_ci: options[:is_ci] || false, type: 'development')
+    run_match(is_ci: options[:is_ci] || false, type: 'appstore')
+    adjust_code_signing
+    build_app(
+      scheme: "dev",
+      export_method: "app-store"
+    )
+  end
+
+  lane :build_appstore_prod do |options|
+    run_match(is_ci: options[:is_ci] || false, type: 'development')
+    run_match(is_ci: options[:is_ci] || false, type: 'appstore')
+    adjust_code_signing
+    build_app(
+      scheme: "prod",
+      export_method: "app-store"
+    )
+  end
+
+  lane :register_a_device do
+    device_name = prompt(text: "Enter the device name: ")
+    device_udid = prompt(text: "Enter the device UDID: ")
+    device_hash = {}
+    device_hash[device_name] = device_udid
+    register_devices(devices: device_hash)
+    sync_code_signing(
+      app_identifier: ["com.ufoelektronika.consumer.dev", "com.ufoelektronika.consumer"],
+      type: "development",
+      git_branch: 'certificates',
+      git_url: 'git@github.com:andreyyoshua/ufo_elektronika.git',
+      force_for_new_devices: true
+    )
+  end
+
+  desc "Push a new beta build to TestFlight"
+  lane :appstore_prod do |options|
+    ENV['APP_PACKAGE'] = "com.ufoelektronika.consumer"
+    if options[:clean]
+      sh("flutter clean")
+      sh("flutter pub get")
+      cocoapods
+    end
+    
+    # build_number = Time.new.strftime("%Y%m%d%H%M")
+    # increment_build_number({
+    #     xcodeproj: 'Runner.xcodeproj',
+    #     build_number: build_number
+    # })
+
+    build_appstore_prod(options)
+    upload_to_testflight
+  end
+
+  desc "Push a new beta staging build to TestFlight"
+  lane :appstore_dev do |options|
+    ENV['APP_PACKAGE'] = "com.ufoelektronika.consumer.dev"
+    if options[:clean]
+      sh("flutter clean")
+      sh("flutter pub get")
+      cocoapods
+    end
+
+    # build_number = Time.new.strftime("%Y%m%d%H%M")
+    # increment_build_number({
+    #     xcodeproj: 'Runner.xcodeproj',
+    #     build_number: build_number
+    # })
+
+    build_appstore_dev(options)
+    upload_to_testflight
+  end
+
+  lane :firebase do |options|
+    ENV['APP_PACKAGE'] = "com.ufoelektronika.consumer.dev"
+
+    if options[:clean]
+      sh("flutter clean")
+      sh("flutter pub get")
+      cocoapods
+    end
+
+    # build_number = Time.new.strftime("%Y%m%d%H%M")
+    # increment_build_number({
+    #     xcodeproj: 'Runner.xcodeproj',
+    #     build_number: build_number
+    # })
+
+    build_development_dev(options)
+    upload_firebase_distribution(is_prod: false)
+    
+    ENV['APP_PACKAGE'] = "com.ufoelektronika.consumer"
+    build_development_prod(options)
+    upload_firebase_distribution(is_prod: true)
+  end
+
+  lane :firebase_dev do |options|
+    ENV['APP_PACKAGE'] = "com.ufoelektronika.consumer.dev"
+
+    if options[:clean]
+      sh("flutter clean")
+      sh("flutter pub get")
+      cocoapods
+    end
+
+    # build_number = Time.new.strftime("%Y%m%d%H%M")
+    # increment_build_number({
+    #     xcodeproj: 'Runner.xcodeproj',
+    #     build_number: build_number
+    # })
+
+    build_development_dev(options)
+    upload_firebase_distribution(is_prod: false)
+  end
+
+  lane :firebase_prod do |options|
+    ENV['APP_PACKAGE'] = "com.ufoelektronika.consumer"
+    if options[:clean]
+      sh("flutter clean")
+      sh("flutter pub get")
+      cocoapods
+    end
+
+    # build_number = Time.new.strftime("%Y%m%d%H%M")
+    # increment_build_number({
+    #     xcodeproj: 'Runner.xcodeproj',
+    #     build_number: build_number
+    # })
+
+    build_development_prod(options)
+    upload_firebase_distribution(is_prod: true)
+  end
+
+  lane :fetch_provisioning_profile do
+    sync_code_signing(
+      app_identifier: ["com.ufoelektronika.consumer.dev", "com.ufoelektronika.consumer"],
+      type: "development",
+      git_branch: 'certificates',
+      git_url: 'git@github.com:andreyyoshua/ufo_elektronika.git',
+      readonly: true
+    )
+
+    sync_code_signing(
+      app_identifier: ["com.ufoelektronika.consumer.dev", "com.ufoelektronika.consumer"],
+      type: "adhoc",
+      git_branch: 'certificates',
+      git_url: 'git@github.com:andreyyoshua/ufo_elektronika.git',
+      readonly: true
+    )
+
+    sync_code_signing(
+      app_identifier: ["com.ufoelektronika.consumer.dev", "com.ufoelektronika.consumer"],
+      type: "appstore",
+      git_branch: 'certificates',
+      git_url: 'git@github.com:andreyyoshua/ufo_elektronika.git',
+      readonly: true
+    )
+  end
+  
+  #passphrase for Match storage = Ufo123
+  lane :update_provisioning_profile do
+      sync_code_signing(
+          app_identifier: ["com.ufoelektronika.consumer.dev", "com.ufoelektronika.consumer"],
+          type: 'development',
+          git_branch: 'certificates',
+          git_url: 'git@github.com:andreyyoshua/ufo_elektronika.git',
+          clone_branch_directly: true,
+          force: true,
+          shallow_clone: true
+      )
+
+      sync_code_signing(
+          app_identifier: ["com.ufoelektronika.consumer.dev", "com.ufoelektronika.consumer"],
+          type: 'adhoc',
+          git_branch: 'certificates',
+          git_url: 'git@github.com:andreyyoshua/ufo_elektronika.git',
+          clone_branch_directly: true,
+          force: true,
+          shallow_clone: true
+      )
+
+      sync_code_signing(
+          app_identifier: ["com.ufoelektronika.consumer.dev", "com.ufoelektronika.consumer"],
+          type: 'appstore',
+          git_branch: 'certificates',
+          git_url: 'git@github.com:andreyyoshua/ufo_elektronika.git',
+          clone_branch_directly: true,
+          force: true,
+          shallow_clone: true
+      )
+  end 
+end

@@ -1,0 +1,175 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  
+  desc "Submit a new Beta Build to Play Console Beta Track"
+  lane :playstore_prod do
+    ENV['APP_PACKAGE'] = "com.ufoelektronika.consumer"
+    build_number = Time.new.strftime("%y%m%d%H%M").to_i
+    version_code = (build_number - 2000000000).to_s
+    Dir.chdir "../.." do
+      # sh("perl -i -pe 's/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.\"#{version_code}\"/e' ./pubspec.yaml");
+      sh("flutter", "clean")
+      sh("flutter", "packages", "get")
+      sh("flutter", "build", "appbundle", "--flavor", "prod", "-t", "lib/main_prod.dart", "--dart-define=IS_FROM_PLAYSTORE=true")
+    end
+
+    upload_to_play_store(
+      root_url: "https://androidpublisher.googleapis.com/",
+      track: "production", # change to beta, production, alpha, internal later
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: 'draft',
+      aab: "../build/app/outputs/bundle/prodRelease/app-prod-release.aab"
+    )
+  end
+
+  desc "Submit a new Beta Build to Play Console Beta Track"
+  lane :playstore_dev do
+
+    ENV['APP_PACKAGE'] = "com.ufoelektronika.consumer.dev"
+
+    build_number = Time.new.strftime("%y%m%d%H%M").to_i
+    version_code = (build_number - 2000000000).to_s
+    Dir.chdir "../.." do
+      sh("perl -i -pe 's/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.\"#{version_code}\"/e' ./pubspec.yaml");
+      sh("flutter", "clean")
+      sh("flutter", "packages", "get")
+      sh("flutter", "build", "appbundle", "--flavor", "dev", "-t", "lib/main_dev.dart", "--dart-define=IS_FROM_PLAYSTORE=true")
+    end
+
+    upload_to_play_store(
+      root_url: "https://androidpublisher.googleapis.com/",
+      track: "internal", # change to beta, production, alpha, internal later
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: 'draft',
+      aab: "../build/app/outputs/bundle/devRelease/app-dev-release.aab"
+    )
+  end
+
+
+  desc "Deploy new dev build to firebase app distribution"
+  lane :firebase do |options|
+    ENV['APP_PACKAGE'] = "com.ufoelektronika.consumer.dev"
+
+    changelog = changelog_from_git_commits(
+        commits_count: 1
+    )
+
+    build_number = Time.new.strftime("%y%m%d%H%M").to_i
+    version_code = (build_number - 2000000000).to_s
+    Dir.chdir "../.." do
+      sh("perl -i -pe 's/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.\"#{version_code}\"/e' ./pubspec.yaml");
+      if options[:clean]
+        sh("flutter", "clean")
+        sh("flutter", "packages", "get")
+      end
+      sh("flutter", "build", "apk", "--debug", "--flavor", "dev", "-t", "lib/main_dev.dart")
+    end
+
+    firebase_app_distribution(
+      app: "1:991573388326:android:8d43b56ce5280b1157cae7",
+      android_artifact_type: "APK",
+      android_artifact_path: "../build/app/outputs/flutter-apk/app-dev-debug.apk",
+      service_credentials_file: "../never-commit/ufoe-85428-8afbfef40f92.json",
+      groups: "Testers",
+      release_notes: "(STAGING) " + changelog,
+      debug: true
+    )
+
+    ENV['APP_PACKAGE'] = "com.ufoelektronika.consumer"
+
+    Dir.chdir "../.." do
+      sh("flutter", "build", "apk", "--flavor", "prod", "-t", "lib/main_prod.dart")
+    end
+
+    firebase_app_distribution(
+      app: "1:991573388326:android:08462d2c3d2ffcb257cae7",
+      android_artifact_type: "APK",
+      android_artifact_path: "../build/app/outputs/flutter-apk/app-prod-release.apk",
+      service_credentials_file: "../never-commit/ufoe-85428-8afbfef40f92.json",
+      groups: "Testers",
+      release_notes: "(PRODUCTION) " + changelog,
+      debug: true
+    )
+
+  end
+
+  desc "Deploy new dev build to firebase app distribution"
+  lane :firebase_dev do |options|
+    ENV['APP_PACKAGE'] = "com.ufoelektronika.consumer.dev"
+    build_number = Time.new.strftime("%y%m%d%H%M").to_i
+    version_code = (build_number - 2000000000).to_s
+    Dir.chdir "../.." do
+      sh("perl -i -pe 's/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.\"#{version_code}\"/e' ./pubspec.yaml");
+      if options[:clean]
+        sh("flutter", "clean")
+        sh("flutter", "packages", "get")
+      end
+      sh("flutter", "build", "appbundle", "--flavor", "dev", "-t", "lib/main_dev.dart")
+    end
+
+    changelog = changelog_from_git_commits(
+        commits_count: 1
+    )
+
+    firebase_app_distribution(
+      app: "1:183415901081:android:9d4c13bb9de3d74a8ee108",
+      android_artifact_type: "AAB",
+      android_artifact_path: "../build/app/outputs/bundle/devRelease/app-dev-release.aab",
+      service_credentials_file: "../never-commit/water-dev-5c92b-firebase-adminsdk-qp1yu-3138d8e1b3.json",
+      groups: "Testers",
+      release_notes: "(STAGING) " + changelog,
+      debug: true
+    )
+
+  end
+
+  desc "Deploy new prop build to firebase app distribution"
+  lane :firebase_prod do |options|
+    ENV['APP_PACKAGE'] = "com.ufoelektronika.consumer"
+    build_number = Time.new.strftime("%y%m%d%H%M").to_i
+    version_code = (build_number - 2000000000).to_s
+    Dir.chdir "../.." do
+      sh("perl -i -pe 's/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.\"#{version_code}\"/e' ./pubspec.yaml");
+      if options[:clean]
+        sh("flutter", "clean")
+        sh("flutter", "packages", "get")
+      end
+      sh("flutter", "build", "appbundle", "--flavor", "prod", "-t", "lib/main_prod.dart")
+    end
+
+    changelog = changelog_from_git_commits(
+        commits_count: 1
+    )
+
+    firebase_app_distribution(
+      app: "1:668590817975:android:a4efb5e3159328811dc332",
+      android_artifact_type: "AAB",
+      android_artifact_path: "../build/app/outputs/bundle/prodRelease/app-prod-release.aab",
+      service_credentials_file: "../never-commit/biissa-water-firebase-adminsdk-4c033-6234c6c0fc.json",
+      groups: "Testers",
+      release_notes: "(PRODUCTION) " + changelog,
+      debug: true
+    )
+
+  end
+end

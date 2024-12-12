@@ -1,0 +1,15 @@
+git_url("git@github.com:andreyyoshua/ufo_elektronika.git")
+git_branch("certificates")
+
+storage_mode("git")
+
+type("development") # The default type, can be: appstore, adhoc, enterprise or development
+
+app_identifier(["com.ufoelektronika.consumer", "com.ufoelektronika.consumer.dev"])
+username("andrey.yoshua@gmail.com") # Your Apple Developer Portal username
+team_id("TSU9353QRJ") # Developer Portal Team ID
+
+# For all available options run `fastlane match --help`
+# Remove the # in the beginning of the line to enable the other options
+
+# The docs are available on https://docs.fastlane.tools/actions/match

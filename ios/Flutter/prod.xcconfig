@@ -1,0 +1,23 @@
+//
+//  prod.xcconfig
+//  Runner
+//
+//  Created by Andrey Yoshua Manik on 28/04/24.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug-prod.xcconfig"
+#include "Generated.xcconfig"
+PRODUCT_BUNDLE_IDENTIFIER=com.ufoelektronika.consumer
+FLUTTER_TARGET=lib/main_prod.dart
+APP_DISPLAY_NAME=UFO Elektronika
+APP_ICON_NAME=AppIcon-prod
+FACEBOOK_APP_ID=909124830060804
+FACEBOOK_CLIENT_TOKEN=b80f762bccd493e5f30cf4bfe9aaf52c
+FACEBOOK_BUNDLE_URL_SCHEMES=fb909124830060804
+GOOGLE_SERVICE_KEY=AIzaSyCGIbguwJbZvDYGkF1XJ4wMU32PnAvNX7A
+GOOGLE_REVERSED_CLIENT_ID=com.googleusercontent.apps.991573388326-m07og3hfomd0q8idhfg24kj9p318kk4q
+GOOGLE_CLIENT_ID=991573388326-m07og3hfomd0q8idhfg24kj9p318kk4q.apps.googleusercontent.com
+DEEPLINK_HOST=ufoelektronika.com
+BASE_URL=https://staging.biissa.com/water

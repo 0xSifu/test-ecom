@@ -1,0 +1,134 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"
+    id 'com.google.firebase.crashlytics'
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('../never-commit/flutter-key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+android {
+    namespace "com.ufoelektronika.consumer"
+    compileSdk flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.ufoelektronika.consumer"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+        minSdkVersion 23
+        targetSdkVersion flutter.targetSdkVersion
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
+
+    signingConfigs {
+        debug {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+    
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            shrinkResources true
+            ndk {
+                debugSymbolLevel 'FULL' //<--- this defines what goes to those symbols
+                // abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64' // <--- i have remove this line
+            }
+
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled true
+                unstrippedNativeLibsDir file("build/app/intermediates/merged_native_libs/release/out/lib")
+            }
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    flavorDimensions "app"
+
+    productFlavors {
+        dev {
+            dimension "app"
+            resValue "string", "app_name", "UFO Elektronika DEV"
+            resValue "string", "facebook_app_id", "909124830060804"
+            resValue "string", "facebook_client_token", "b80f762bccd493e5f30cf4bfe9aaf52c"
+            resValue "string", "facebook_content_provider_authorities", "com.facebook.app.FacebookContentProvider909124830060804"
+            resValue "string", "moengage_app_id", "DZC7N8Y730VDTGTJQ9RA9S1D" // By default is adding _DEBUG suffix, so dont need to add _DEBUG
+            resValue "string", "google_api_key_biissa", "AIzaSyBQ6A2HumidWbLa8o8CgujmSvLqXwELwYs"
+            resValue "string", "base_url", "https://staging.biissa.com/water"
+            resValue "string", "deeplink_host", "ufoelektronika.com"
+            // versionNameSuffix "-dev"
+            applicationIdSuffix ".dev"
+            flutter.target "lib/main_dev.dart"
+        }
+        prod {
+            dimension "app"
+            resValue "string", "app_name", "UFO Elektronika"
+            resValue "string", "facebook_app_id", "909124830060804"
+            resValue "string", "facebook_client_token", "b80f762bccd493e5f30cf4bfe9aaf52c"
+            resValue "string", "facebook_content_provider_authorities", "com.facebook.app.FacebookContentProvider909124830060804"
+            resValue "string", "moengage_app_id", "DZC7N8Y730VDTGTJQ9RA9S1D"
+            resValue "string", "google_api_key_biissa", "AIzaSyBLNlJVatO4oodhcGSeglXGQoTUZKYBKnE"
+            resValue "string", "base_url", "https://biissa.com/water"
+            resValue "string", "deeplink_host", "ufoelektronika.com"
+            flutter.target "lib/main_prod.dart"
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {}

@@ -1,0 +1,11 @@
+#!/bin/bash 
+
+cd android
+bundle exec fastlane firebase clean:true
+bundle exec fastlane playstore_prod clean:true
+# bundle exec fastlane playstore_dev clean:true
+
+cd ../ios
+bundle exec fastlane firebase clean:true
+bundle exec fastlane appstore_prod clean:true
+# bundle exec fastlane appstore_dev clean:true

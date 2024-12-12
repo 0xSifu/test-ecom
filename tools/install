@@ -1,0 +1,7 @@
+#!/bin/bash 
+
+cd android
+bundle install
+
+cd ../ios
+bundle install

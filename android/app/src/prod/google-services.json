@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "991573388326",
+    "project_id": "ufoe-85428",
+    "storage_bucket": "ufoe-85428.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991573388326:android:08462d2c3d2ffcb257cae7",
+        "android_client_info": {
+          "package_name": "com.ufoelektronika.consumer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "991573388326-ntiqsjsfkg7rv5gpo2hirlg66q25a64m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ufoelektronika.consumer",
+            "certificate_hash": "ac2857a14e5aeff28eaa2ff8541253a7457b0943"
+          }
+        },
+        {
+          "client_id": "991573388326-bggsnu69dla1v35bo1o1fhjs6gacdlfo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhZM4JR8XhEsKohVbNLsLlKp66lV1fP0Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "991573388326-bggsnu69dla1v35bo1o1fhjs6gacdlfo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "991573388326-j1p2o5kh312es6qgnnrr4t5c020hotmv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ufoelektronika.consumer.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991573388326:android:8d43b56ce5280b1157cae7",
+        "android_client_info": {
+          "package_name": "com.ufoelektronika.consumer.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "991573388326-82m0eb3l6mi1k7jvnqdahh6u53lu21b1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ufoelektronika.consumer.dev",
+            "certificate_hash": "ac2857a14e5aeff28eaa2ff8541253a7457b0943"
+          }
+        },
+        {
+          "client_id": "991573388326-bggsnu69dla1v35bo1o1fhjs6gacdlfo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhZM4JR8XhEsKohVbNLsLlKp66lV1fP0Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "991573388326-bggsnu69dla1v35bo1o1fhjs6gacdlfo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "991573388326-j1p2o5kh312es6qgnnrr4t5c020hotmv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ufoelektronika.consumer.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
