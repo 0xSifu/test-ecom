@@ -410,10 +410,12 @@ class ProductScreen extends GetView<ProductController> {
                                             value: controller.warrantyChecked.value == true, 
                                             onChanged: (checked) => controller.warrantyChecked.value = checked == true
                                           ),
-                                          const Text("Garansi UFO PRO ", style: TextStyle(color: AppColor.primaryColor, fontSize: 12)),
+                                          if (product.garansiPrice !=  null && product.garansiPrice! > 50000)...[
+                                            const Text("Garansi UFO PRO ", style: TextStyle(color: AppColor.primaryColor, fontSize: 12)),
                                           Text(product.garansiName ?? "", style: const TextStyle(fontSize: 12)),
                                           const Text(" + ", style: TextStyle(fontSize: 12)),
                                           Text("Rp${NumberFormat('#,###').format(product.garansiPrice)}", style: const TextStyle(fontSize: 12)),
+                                          ],
                                           const SizedBox(width: 4),
                                           SizedBox(
                                             width: 20,

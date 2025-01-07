@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ufo_elektronika/constants/colors.dart';
@@ -26,10 +25,8 @@ class MainMenuScreen extends GetView<MainMenuController> {
           children: [
             if (controller.canGoUp)
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 10
-                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 child: InkWell(
                   onTap: controller.goUp,
                   highlightColor: Colors.transparent,
@@ -86,8 +83,10 @@ class MainMenuScreen extends GetView<MainMenuController> {
                   itemCount: controller.currentCategories.length,
                   itemBuilder: (context, index) {
                     final menuItem = controller.currentCategories[index];
-                    final nextItems = menuItem.childLv4 ?? menuItem.childLv3 ?? menuItem.children;
-                    
+                    final nextItems = menuItem.childLv4 ??
+                        menuItem.childLv3 ??
+                        menuItem.children;
+
                     return Column(
                       children: [
                         Padding(
@@ -108,7 +107,8 @@ class MainMenuScreen extends GetView<MainMenuController> {
                             visualDensity: VisualDensity.compact,
                             enableFeedback: true,
                             onTap: () {
-                              Get.toNamed(CategoryScreen.routeName, parameters: { "id": "${menuItem.categoryId}" });
+                              Get.toNamed(CategoryScreen.routeName,
+                                  parameters: {"id": "${menuItem.categoryId}"});
                             },
                           ),
                         ),
@@ -118,7 +118,8 @@ class MainMenuScreen extends GetView<MainMenuController> {
                             color: const Color(0xFFF7F7F7),
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             child: ListView.builder(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               scrollDirection: Axis.horizontal,
                               itemCount: nextItems.length,
                               itemBuilder: (context, index) {
@@ -134,11 +135,23 @@ class MainMenuScreen extends GetView<MainMenuController> {
                                         child: Column(
                                           children: [
                                             if (menuItemChild.icon == null)
-                                              Container(width: 33, height: 33, color: Colors.grey),
-                                            if (menuItemChild.icon != null && menuItemChild.icon!.isNotEmpty)
-                                              UEImage2(menuItemChild.icon ?? "", height: 33, width: 33,),
+                                              Container(
+                                                  width: 33,
+                                                  height: 33,
+                                                  color: Colors.grey),
+                                            if (menuItemChild.icon != null &&
+                                                menuItemChild.icon!.isNotEmpty)
+                                              UEImage2(
+                                                menuItemChild.icon ?? "",
+                                                height: 33,
+                                                width: 33,
+                                              ),
                                             const SizedBox(height: 8),
-                                            Text(menuItemChild.name ?? "", maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 10))
+                                            Text(menuItemChild.name ?? "",
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                    fontSize: 10))
                                           ],
                                         ),
                                       ),

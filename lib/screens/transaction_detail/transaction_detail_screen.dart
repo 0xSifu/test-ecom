@@ -1,4 +1,3 @@
-
 import 'package:barcode/barcode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -27,29 +26,31 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
     final detail = controller.state;
     if (detail == null) return;
     RatingBinding(
-      products: detail.products
-        .map((product) => OrderProduct(
-          image: product.image, 
-          name: product.name, 
-          option: product.optionText, 
-          href: product.href, 
-          productId: product.productId))
-        .toList(),
-      orderId: detail.orderId ?? "", 
-      dateAdded: detail.dateAdded ?? ""
-      ).dependencies();
+            products: detail.products
+                .map((product) => OrderProduct(
+                    image: product.image,
+                    name: product.name,
+                    option: product.optionText,
+                    href: product.href,
+                    productId: product.productId))
+                .toList(),
+            orderId: detail.orderId ?? "",
+            dateAdded: detail.dateAdded ?? "")
+        .dependencies();
     showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(6.0)),
-      ),
-      builder: (context) {
-        return ModalBottomSheetDefault(
-          title: "BERI PENILAIAN",
-          child: (scrollController) => RatingBottomsheet(scrollController: scrollController, orderId: detail.orderId ?? ""),
-        );
-    });
+        context: context,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(6.0)),
+        ),
+        builder: (context) {
+          return ModalBottomSheetDefault(
+            title: "BERI PENILAIAN",
+            child: (scrollController) => RatingBottomsheet(
+                scrollController: scrollController,
+                orderId: detail.orderId ?? ""),
+          );
+        });
   }
 
   @override
@@ -75,32 +76,38 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(6)
-                  ),
-                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(6)),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 8),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Text("Rincian pesanan".toUpperCase(), 
-                          style: const TextStyle(
-                            color: AppColor.primaryColor, fontWeight: FontWeight.bold,
-                            fontFamily: "FuturaLT"
-                        )),
+                        child: Text("Rincian pesanan".toUpperCase(),
+                            style: const TextStyle(
+                                color: AppColor.primaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "FuturaLT")),
                       ),
                       const Divider(),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 8),
                         child: Row(
                           children: [
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("ORDER ID: ${detail.orderId}", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColor.primaryColor)),
-                                Text(detail.dateAdded ?? "", style: const TextStyle(fontSize: 9))
+                                Text("ORDER ID: ${detail.orderId}",
+                                    style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColor.primaryColor)),
+                                Text(detail.dateAdded ?? "",
+                                    style: const TextStyle(fontSize: 9))
                               ],
                             ),
                             const SizedBox(width: 8),
@@ -110,17 +117,17 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                                 crossAxisAlignment: WrapCrossAlignment.end,
                                 children: [
                                   Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFCCDFEF),
-                                      borderRadius: BorderRadius.circular(6)
-                                    ),
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                                    child: Text(
-                                      detail.shippingMethod ?? "", 
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(fontSize: 9, color: AppColor.primaryColor)
-                                    )
-                                  )
+                                      decoration: BoxDecoration(
+                                          color: const Color(0xFFCCDFEF),
+                                          borderRadius:
+                                              BorderRadius.circular(6)),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 4),
+                                      child: Text(detail.shippingMethod ?? "",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                              fontSize: 9,
+                                              color: AppColor.primaryColor)))
                                 ],
                               ),
                             )
@@ -132,14 +139,17 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                       // first product
                       InkWell(
                         onTap: () {
-                          final productId = detail.products.firstOrNull?.productId;
+                          final productId =
+                              detail.products.firstOrNull?.productId;
                           if (productId != null) {
-                            Get.toNamed(ProductScreen.routeName, parameters: {"id": productId});
+                            Get.toNamed(ProductScreen.routeName,
+                                parameters: {"id": productId});
                           }
                         },
                         child: Container(
                           padding: const EdgeInsets.all(15),
-                          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(6),
@@ -158,40 +168,58 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                                     height: 70,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(6),
-                                      child: UEImage2(detail.products.firstOrNull?.image ?? ""),
+                                      child: UEImage2(
+                                          detail.products.firstOrNull?.image ??
+                                              ""),
                                     ),
                                   ),
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text(detail.products.firstOrNull?.name ?? "",
+                                        Text(
+                                          detail.products.firstOrNull?.name ??
+                                              "",
                                           style: const TextStyle(
-                                            color: AppColor.primaryColor,
-                                            fontSize: 13
-                                          ),
+                                              color: AppColor.primaryColor,
+                                              fontSize: 13),
                                         ),
                                         Text(
-                                          detail.products.firstOrNull?.total ?? "",
+                                          detail.products.firstOrNull?.total ??
+                                              "",
                                           style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFFFBAA1A),
-                                            fontSize: 15
-                                          ),
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFFFBAA1A),
+                                              fontSize: 15),
                                         ),
                                         Row(
                                           children: [
-                                            Image.asset("assets/icon/ufo-protection.png", width: 29),
+                                            Image.asset(
+                                                "assets/icon/ufo-protection.png",
+                                                width: 29),
                                             const SizedBox(width: 6),
                                             Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                const Text("Produk ini terproteksi oleh", style: TextStyle(fontSize: 11)),
+                                                const Text(
+                                                    "Produk ini terproteksi oleh",
+                                                    style: TextStyle(
+                                                        fontSize: 11)),
                                                 Row(
                                                   children: [
-                                                    const Text("Garansi UFO PRO", style: TextStyle(color: AppColor.primaryColor, fontSize: 11)),
-                                                    Text(" ${detail.products.firstOrNull?.garansiName}", style: const TextStyle(fontSize: 11))
+                                                    const Text(
+                                                        "Garansi UFO PRO",
+                                                        style: TextStyle(
+                                                            color: AppColor
+                                                                .primaryColor,
+                                                            fontSize: 11)),
+                                                    Text(
+                                                        " ${detail.products.firstOrNull?.garansiName}",
+                                                        style: const TextStyle(
+                                                            fontSize: 11))
                                                   ],
                                                 )
                                               ],
@@ -230,7 +258,8 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                                       children: [
                                         // item
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Row(
@@ -239,41 +268,67 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                                                   width: 70,
                                                   height: 70,
                                                   child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(6),
-                                                    child: UEImage2(product.image ?? ""),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            6),
+                                                    child: UEImage2(
+                                                        product.image ?? ""),
                                                   ),
                                                 ),
                                                 const SizedBox(width: 10),
                                                 Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      Text(product.name ?? "",
+                                                      Text(
+                                                        product.name ?? "",
                                                         style: const TextStyle(
-                                                          color: AppColor.primaryColor,
-                                                          fontSize: 13
-                                                        ),
+                                                            color: AppColor
+                                                                .primaryColor,
+                                                            fontSize: 13),
                                                       ),
                                                       Text(
                                                         product.total ?? "",
                                                         style: const TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Color(0xFFFBAA1A),
-                                                          fontSize: 15
-                                                        ),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Color(
+                                                                0xFFFBAA1A),
+                                                            fontSize: 15),
                                                       ),
                                                       Row(
                                                         children: [
-                                                          Image.asset("assets/icon/ufo-protection.png", width: 29),
-                                                          const SizedBox(width: 6),
+                                                          Image.asset(
+                                                              "assets/icon/ufo-protection.png",
+                                                              width: 29),
+                                                          const SizedBox(
+                                                              width: 6),
                                                           Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
                                                             children: [
-                                                              const Text("Produk ini terproteksi oleh", style: TextStyle(fontSize: 11)),
+                                                              const Text(
+                                                                  "Produk ini terproteksi oleh",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          11)),
                                                               Row(
                                                                 children: [
-                                                                  const Text("Garansi UFO PRO", style: TextStyle(color: AppColor.primaryColor, fontSize: 11)),
-                                                                  Text(" ${product.garansiName}", style: const TextStyle(fontSize: 11))
+                                                                  const Text(
+                                                                      "Garansi UFO PRO",
+                                                                      style: TextStyle(
+                                                                          color: AppColor
+                                                                              .primaryColor,
+                                                                          fontSize:
+                                                                              11)),
+                                                                  Text(
+                                                                      " ${product.garansiName}",
+                                                                      style: const TextStyle(
+                                                                          fontSize:
+                                                                              11))
                                                                 ],
                                                               )
                                                             ],
@@ -294,7 +349,7 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                               )
                           ],
                         ),
-                      
+
                       if (detail.products.length > 1)
                         // show all product button
                         Center(
@@ -303,7 +358,8 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                               animationDuration: Duration.zero,
                               splashFactory: NoSplash.splashFactory,
                             ),
-                            onPressed: () => controller.showAllProduct.value = !controller.showAllProduct.value,
+                            onPressed: () => controller.showAllProduct.value =
+                                !controller.showAllProduct.value,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -322,7 +378,6 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                             ),
                           ),
                         ),
-
                     ],
                   ),
                 ),
@@ -330,25 +385,27 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                 // info pengiriman
                 Container(
                   width: double.infinity,
-                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   color: Colors.white,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 8),
                         child: Text(
                           'Info Pengiriman'.toUpperCase(),
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: AppColor.primaryColor,
-                            fontFamily: "FuturaLT"
-                          ),
+                              fontWeight: FontWeight.bold,
+                              color: AppColor.primaryColor,
+                              fontFamily: "FuturaLT"),
                         ),
                       ),
                       const Divider(height: 1),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 10),
                         child: Column(
                           children: [
                             Row(
@@ -356,17 +413,17 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                               children: [
                                 const SizedBox(
                                   width: 100,
-                                  child: Text('Kurir', style: TextStyle(fontSize: 12)),
+                                  child: Text('Kurir',
+                                      style: TextStyle(fontSize: 12)),
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     detail.shippingMethod ?? "",
                                     style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColor.primaryColor,
-                                      fontSize: 12
-                                    ),
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColor.primaryColor,
+                                        fontSize: 12),
                                   ),
                                 ),
                               ],
@@ -377,23 +434,26 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                               children: [
                                 const SizedBox(
                                   width: 100,
-                                  child: Text('Alamat', style: TextStyle(fontSize: 12)),
+                                  child: Text('Alamat',
+                                      style: TextStyle(fontSize: 12)),
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         detail.name ?? "",
                                         style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColor.primaryColor,
-                                          fontSize: 12
-                                        ),
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColor.primaryColor,
+                                            fontSize: 12),
                                       ),
-                                      Text(detail.telephone ?? "", style: const TextStyle(fontSize: 11)),
-                                      Text(detail.paymentAddress ?? "", style: const TextStyle(fontSize: 11)),
+                                      Text(detail.telephone ?? "",
+                                          style: const TextStyle(fontSize: 11)),
+                                      Text(detail.paymentAddress ?? "",
+                                          style: const TextStyle(fontSize: 11)),
                                     ],
                                   ),
                                 ),
@@ -413,48 +473,53 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            for (var (index, history) in detail.orderHistory.indexed)
-
+                            for (var (index, history)
+                                in detail.orderHistory.indexed)
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(right: 15),
+                                        padding:
+                                            const EdgeInsets.only(right: 15),
                                         child: Container(
                                           width: 11,
                                           height: 11,
                                           decoration: BoxDecoration(
-                                            color: index == 0 ? const Color(0xFFFED100) : const Color(0xFFE8E8E8),
-                                            borderRadius: BorderRadius.circular(6)
-                                          ),
+                                              color: index == 0
+                                                  ? const Color(0xFFFED100)
+                                                  : const Color(0xFFE8E8E8),
+                                              borderRadius:
+                                                  BorderRadius.circular(6)),
                                         ),
                                       ),
-                                      Text(history.dateAdded ?? "",
+                                      Text(
+                                        history.dateAdded ?? "",
                                         style: const TextStyle(
                                           fontSize: 11,
                                         ),
                                       ),
                                       const SizedBox(width: 6),
-                                      Text(history.text ?? "", style: const TextStyle(fontSize: 11))
+                                      Text(history.text ?? "",
+                                          style: const TextStyle(fontSize: 11))
                                     ],
                                   ),
                                   if (index < detail.orderHistory.length - 1)
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 5),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 0,
-                                      vertical: 10,
-                                    ),
-                                    decoration: const BoxDecoration(
-                                      border: Border(
-                                        left: BorderSide(
-                                          color: AppColor.grayBorder,
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 5),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 0,
+                                        vertical: 10,
+                                      ),
+                                      decoration: const BoxDecoration(
+                                        border: Border(
+                                          left: BorderSide(
+                                            color: AppColor.grayBorder,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
                                 ],
                               ),
                           ],
@@ -464,28 +529,36 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                   ),
                 ),
 
-                if (detail.shippingMethod?.toLowerCase().contains("collect") == true && detail.noInvoice?.isNotEmpty == true)
+                if (detail.shippingMethod?.toLowerCase().contains("collect") ==
+                        true &&
+                    detail.noInvoice?.isNotEmpty == true)
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(6)
-                    ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                          child: Text("BARCODE CLICK & COLLECT", style: TextStyle(
-                            fontFamily: "FuturaLT",
-                            fontWeight: FontWeight.bold,
-                            color: AppColor.primaryColor
-                          ),),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 10),
+                          child: Text(
+                            "BARCODE CLICK & COLLECT",
+                            style: TextStyle(
+                                fontFamily: "FuturaLT",
+                                fontWeight: FontWeight.bold,
+                                color: AppColor.primaryColor),
+                          ),
                         ),
-                        const Divider(height: 1,),
+                        const Divider(
+                          height: 1,
+                        ),
                         const SizedBox(height: 12),
                         Center(
-                          child: SvgPicture.string(Barcode.code128().toSvg(detail.noInvoice ?? "")),
+                          child: SvgPicture.string(
+                              Barcode.code128().toSvg(detail.noInvoice ?? "")),
                         ),
                         const SizedBox(height: 12),
                       ],
@@ -495,64 +568,73 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                 // rincian pembayaran
                 Container(
                   width: double.infinity,
-                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   color: Colors.white,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 10),
                         child: Text(
                           'Rincian Pembayaran'.toUpperCase(),
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "FuturaLT",
-                            color: AppColor.primaryColor
-                          ),
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "FuturaLT",
+                              color: AppColor.primaryColor),
                         ),
                       ),
                       const Divider(height: 1),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 6),
                         child: Column(
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text('Metode Pembayaran', style: TextStyle(fontSize: 12)),
-                                Text(detail.paymentMethod ?? "", style: const TextStyle(fontSize: 12)),
+                                const Text('Metode Pembayaran',
+                                    style: TextStyle(fontSize: 12)),
+                                Text(detail.paymentMethod ?? "",
+                                    style: const TextStyle(fontSize: 12)),
                               ],
                             ),
                             const SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text('Barang', style: TextStyle(fontSize: 12)),
-                                Text(detail.products.length.toString(), style: const TextStyle(fontSize: 12)),
+                                const Text('Barang',
+                                    style: TextStyle(fontSize: 12)),
+                                Text(detail.products.length.toString(),
+                                    style: const TextStyle(fontSize: 12)),
                               ],
                             ),
                             const SizedBox(height: 10),
-
-                            for (var total in detail.totals.where((e) => e.title?.toLowerCase() != "total"))
-                              Column(
-                                children: [
-                                  if (total.title?.toLowerCase() == "total")
-                                    const Divider(),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      
-                                      Text(total.title ?? "", style: const TextStyle(
-                                        fontSize: 12
-                                      )),
-                                      Text(total.text ?? "", style: const TextStyle(
-                                        fontSize: 12,
-                                      )),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                ],
-                              ),
+                            for (var total in detail.totals.where(
+                                (e) => e.title?.toLowerCase() != "total"))
+                              if (!(total.title?.toLowerCase() ==
+                                      "garansi ufo" &&
+                                  total.text == 'Rp 0'))
+                                Column(
+                                  children: [
+                                    if (total.title?.toLowerCase() == "total")
+                                      const Divider(),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(total.title ?? "",
+                                            style:
+                                                const TextStyle(fontSize: 12)),
+                                        Text(total.text ?? "",
+                                            style:
+                                                const TextStyle(fontSize: 12)),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                  ],
+                                ),
                           ],
                         ),
                       ),
@@ -560,23 +642,24 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                       const SizedBox(height: 10),
                       Builder(
                         builder: (context) {
-                          final total = detail.totals.firstWhereOrNull((e) => e.title?.toLowerCase() == "total");
+                          final total = detail.totals.firstWhereOrNull(
+                              (e) => e.title?.toLowerCase() == "total");
                           return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                
-                                Text(total?.title ?? "", style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColor.primaryColor
-                                )),
-                                Text(total?.text ?? "", style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFFFBAA1A)
-                                )),
+                                Text(total?.title ?? "",
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColor.primaryColor)),
+                                Text(total?.text ?? "",
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFFFBAA1A))),
                               ],
                             ),
                           );
@@ -586,40 +669,45 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                     ],
                   ),
                 ),
-                if (detail.orderStatusId == TransactionStatus.shipping || detail.orderStatusId == TransactionStatus.paid)
+                if (detail.orderStatusId == TransactionStatus.shipping ||
+                    detail.orderStatusId == TransactionStatus.paid)
                   if (controller.isLoadingPostItemReceived.value == true)
-                  const Center(child: CircularProgressIndicator())
+                    const Center(child: CircularProgressIndicator())
                   else
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
-                    child: FilledButton(
-                      onPressed: () {
-                        controller.postItemReceived(orderId);
-                      },
-                      child: const Text(
-                        'BARANG DITERIMA',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 11,
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 1),
+                      child: FilledButton(
+                        onPressed: () {
+                          controller.postItemReceived(orderId);
+                        },
+                        child: const Text(
+                          'BARANG DITERIMA',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                
+
                 if (detail.orderStatusId == TransactionStatus.waitingForPayment)
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
                     child: FilledButton(
                       onPressed: () {
                         if (detail.midtransToken?.isNotEmpty == true) {
-                          final midtrans = Get.find<MidtransProvider>().getMidtransSDK?.call();
+                          final midtrans = Get.find<MidtransProvider>()
+                              .getMidtransSDK
+                              ?.call();
                           if (midtrans != null) {
-                            midtrans.setTransactionFinishedCallback((result) {
-
-                            });
-                            midtrans.startPaymentUiFlow(token: detail.midtransToken);
+                            midtrans
+                                .setTransactionFinishedCallback((result) {});
+                            midtrans.startPaymentUiFlow(
+                                token: detail.midtransToken);
                           } else {
                             Get.showSnackbar(const GetSnackBar(
                               message: "Terjadi kesalahan. Silakan coba lagi",
@@ -628,18 +716,21 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                           }
                         } else {
                           TransactionScreen.showUploadPaymentProofBottomSheet(
-                            context: context, 
-                            orderId: orderId, 
-                            dateAdded: detail.dateAdded ?? "", 
-                            totalProducts: detail.products.length, 
-                            firstProductImage: detail.products.firstOrNull?.image,
+                            context: context,
+                            orderId: orderId,
+                            dateAdded: detail.dateAdded ?? "",
+                            totalProducts: detail.products.length,
+                            firstProductImage:
+                                detail.products.firstOrNull?.image,
                             firstProductName: detail.products.firstOrNull?.name,
                             uploadPaymentProof: controller.uploadPaymentProof,
                           );
                         }
                       },
                       child: Text(
-                        detail.midtransToken?.isNotEmpty == true ? "Lanjutkan Pembayaran" : 'UNGGAH BUKTI TRANSFER',
+                        detail.midtransToken?.isNotEmpty == true
+                            ? "Lanjutkan Pembayaran"
+                            : 'UNGGAH BUKTI TRANSFER',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 11,
@@ -648,25 +739,25 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                     ),
                   ),
 
-                if (detail.orderStatusId == TransactionStatus.completed && detail.reviewId == null)
+                if (detail.orderStatusId == TransactionStatus.completed &&
+                    detail.reviewId == null)
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFED100)
-                      ),
+                          backgroundColor: const Color(0xFFFED100)),
                       onPressed: () {
                         showRatingBottomSheet(context);
                       },
                       child: const Text(
                         'BERI PENILAIAN',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 11,
-                          color: AppColor.primaryColor,
-                          fontFamily: "MYRIADPRO"
-                        ),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                            color: AppColor.primaryColor,
+                            fontFamily: "MYRIADPRO"),
                       ),
                     ),
                   ),
@@ -677,45 +768,46 @@ class TransactionDetailScreen extends GetView<TransactionDetailController> {
                     children: [
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 1),
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            side: const BorderSide(color: AppColor.primaryColor)
-                          ),
+                              backgroundColor: Colors.white,
+                              side: const BorderSide(
+                                  color: AppColor.primaryColor)),
                           onPressed: () {
-                            Get.toNamed("https://www.ufoelektronika.com/hubungi-customer-care");
+                            Get.toNamed(
+                                "https://www.ufoelektronika.com/hubungi-customer-care");
                           },
                           child: const Text(
                             'HUBUNGI KAMI',
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 11,
-                              fontFamily: "MYRIADPRO",
-                              color: AppColor.primaryColor
-                            ),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                                fontFamily: "MYRIADPRO",
+                                color: AppColor.primaryColor),
                           ),
                         ),
                       ),
                       if (detail.orderStatusId == TransactionStatus.completed)
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 1),
                           child: FilledButton(
                             style: OutlinedButton.styleFrom(
-                              backgroundColor: const Color(0xFFFCD4D3)
-                            ),
+                                backgroundColor: const Color(0xFFFCD4D3)),
                             onPressed: () {
-                              Get.toNamed(RefundScreen.routeName, parameters: {"order_id": orderId});
+                              Get.toNamed(RefundScreen.routeName,
+                                  parameters: {"order_id": orderId});
                             },
                             child: const Text(
                               'BATALKAN',
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 11,
-                                fontFamily: "MYRIADPRO",
-                                color: Color(0xFFEF322F)
-                              ),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11,
+                                  fontFamily: "MYRIADPRO",
+                                  color: Color(0xFFEF322F)),
                             ),
                           ),
                         ),
